@@ -40,17 +40,43 @@
   margin: 0;
   padding: 0;
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  outline: none;
+}
+
+::selection {
+  background: transparent;
+  color: inherit;
+}
+
+::-moz-selection {
+  background: transparent;
+  color: inherit;
 }
 
 html {
   color-scheme: dark;
   -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
 }
 
 html, body {
   height: 100%;
   width: 100%;
   overflow: hidden;
+  -webkit-tap-highlight-color: transparent !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-select: none !important;
+  user-select: none !important;
+  touch-action: manipulation;
 }
 
 body {
@@ -59,8 +85,18 @@ body {
   font-family: var(--sans);
   font-weight: 400;
   line-height: 1.5;
-  user-select: none;
-  -webkit-user-select: none;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+img, svg, a, button, canvas, span, div, p, h1, h2, h3, h4, h5, h6 {
+  -webkit-user-select: none !important;
+  -webkit-touch-callout: none !important;
+  -webkit-user-drag: none !important;
+  user-select: none !important;
+  -webkit-tap-highlight-color: transparent !important;
 }
 
 button {
@@ -69,7 +105,7 @@ button {
   background: none;
   border: 0;
   cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
+  -webkit-tap-highlight-color: transparent !important;
   touch-action: manipulation;
 }
 
@@ -1887,6 +1923,10 @@ button {
 const $ = sel => document.querySelector(sel);
 const $$ = sel => [...document.querySelectorAll(sel)];
 const buzz = pattern => { if (navigator.vibrate) navigator.vibrate(pattern); };
+
+// Prevent long-press context menu and blue selection highlight on mobile
+document.addEventListener('contextmenu', e => e.preventDefault(), { passive: false });
+document.addEventListener('selectstart', e => e.preventDefault());
 
 /* =========================================================
    SYNTHESIZED AUDIO ENGINE (Web Audio API)
