@@ -699,22 +699,23 @@ button {
   backdrop-filter: blur(8px);
 }
 
-/* SCREEN 3: CAKE RITUAL */
+/* SCREEN 3: CAKE RITUAL & INTERACTIVE CUTTING */
 .cake-stage {
   position: relative;
-  width: 280px;
-  height: 230px;
+  width: 290px;
+  height: 240px;
   margin: 0.8rem auto 0.2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
+  cursor: pointer;
 }
 
 .cake-glow-floor {
   position: absolute;
   bottom: 0;
-  width: 250px;
+  width: 260px;
   height: 50px;
   border-radius: 50%;
   background: radial-gradient(ellipse, rgba(246, 210, 137, 0.35) 0%, rgba(246, 210, 137, 0) 70%);
@@ -725,7 +726,7 @@ button {
 .cake-plate {
   position: absolute;
   bottom: 12px;
-  width: 240px;
+  width: 250px;
   height: 18px;
   border-radius: 50%;
   background: linear-gradient(180deg, #584c6e 0%, #2f273d 100%);
@@ -735,12 +736,13 @@ button {
 .tier-bottom {
   position: absolute;
   bottom: 24px;
-  width: 190px;
+  width: 196px;
   height: 68px;
   border-radius: 12px 12px 8px 8px;
   background: linear-gradient(180deg, #442a5c 0%, #261638 100%);
   box-shadow: inset 0 4px 6px rgba(255, 255, 255, 0.15), 0 10px 20px rgba(0, 0, 0, 0.4);
   overflow: hidden;
+  transition: box-shadow 0.6s var(--ease);
 }
 
 .frosting-drips {
@@ -764,12 +766,13 @@ button {
 .tier-top {
   position: absolute;
   bottom: 84px;
-  width: 136px;
+  width: 138px;
   height: 58px;
   border-radius: 10px 10px 6px 6px;
   background: linear-gradient(180deg, #593779 0%, #351f49 100%);
   box-shadow: inset 0 4px 6px rgba(255, 255, 255, 0.18), 0 8px 18px rgba(0, 0, 0, 0.45);
   overflow: hidden;
+  transition: box-shadow 0.6s var(--ease);
 }
 
 .tier-gold-band {
@@ -780,6 +783,178 @@ button {
   height: 3px;
   border-radius: 99px;
   background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+
+/* Glowing Cut Seam */
+.cake-cut-seam {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 3px;
+  transform: translateX(-50%) scaleY(0);
+  background: linear-gradient(180deg, #ffffff, var(--gold) 45%, var(--rose) 85%);
+  box-shadow: 0 0 10px rgba(246, 210, 137, 0.9), 0 0 18px rgba(251, 113, 133, 0.7);
+  border-radius: 4px;
+  z-index: 4;
+  transform-origin: top center;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.cake-cut-completed .cake-cut-seam {
+  transform: translateX(-50%) scaleY(1);
+}
+
+.cake-cut-completed .tier-bottom,
+.cake-cut-completed .tier-top {
+  box-shadow: inset 0 4px 6px rgba(255, 255, 255, 0.15), 0 10px 24px rgba(0, 0, 0, 0.5), inset 0 0 14px rgba(246, 210, 137, 0.25);
+}
+
+/* Floating Decorative Cake Knife */
+.cake-knife {
+  position: absolute;
+  top: -24px;
+  right: 22px;
+  width: 84px;
+  height: 84px;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(25px, -25px) rotate(-42deg);
+  transition: opacity 0.5s ease, transform 0.5s var(--ease);
+  z-index: 12;
+  filter: drop-shadow(0 4px 14px rgba(246, 210, 137, 0.5));
+}
+
+.screen.candles-blown .cake-knife {
+  opacity: 1;
+  transform: translate(0, 0) rotate(-32deg);
+  animation: knifeHover 2s ease-in-out infinite alternate;
+}
+
+.screen.cake-cut-completed .cake-knife {
+  opacity: 0;
+  animation: none;
+  pointer-events: none;
+}
+
+@keyframes knifeHover {
+  0% { transform: translateY(0) rotate(-32deg); }
+  100% { transform: translateY(-10px) rotate(-28deg); }
+}
+
+/* Knife Slicing Animation */
+.cake-stage.is-cutting .cake-knife {
+  animation: knifeCutMotion 0.75s cubic-bezier(0.2, 0.9, 0.3, 1) forwards !important;
+}
+
+@keyframes knifeCutMotion {
+  0% { opacity: 1; transform: translate(12px, -15px) rotate(-32deg); }
+  35% { opacity: 1; transform: translate(-30px, 35px) rotate(-16deg); }
+  65% { opacity: 1; transform: translate(-45px, 85px) rotate(0deg); }
+  85% { opacity: 1; transform: translate(-50px, 140px) rotate(16deg); }
+  100% { opacity: 0; transform: translate(-55px, 175px) rotate(26deg); }
+}
+
+/* Served Slice on Mini Plate */
+.cake-slice-served {
+  position: absolute;
+  right: -16px;
+  bottom: 22px;
+  opacity: 0;
+  transform: scale(0.3) translate(-36px, 18px) rotate(-14deg);
+  transition: opacity 0.6s var(--ease), transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+.cake-cut-completed .cake-slice-served {
+  opacity: 1;
+  transform: scale(1) translate(0, 0) rotate(0deg);
+}
+
+.slice-mini-plate {
+  position: relative;
+  width: 74px;
+  height: 54px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slice-plate-base {
+  position: absolute;
+  bottom: 0;
+  width: 70px;
+  height: 11px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #6b5b82 0%, #352b47 100%);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.35);
+}
+
+.slice-piece {
+  position: relative;
+  width: 44px;
+  height: 38px;
+  background: linear-gradient(145deg, #593779 0%, #351f49 70%, #261638 100%);
+  clip-path: polygon(50% 0%, 100% 85%, 85% 100%, 15% 100%, 0% 85%);
+  border-radius: 4px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slice-piece::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 9px;
+  background: #fbf1e2;
+  border-radius: 4px 4px 0 0;
+}
+
+.slice-piece::after {
+  content: "";
+  position: absolute;
+  top: 18px;
+  left: 10%;
+  right: 10%;
+  height: 3px;
+  background: var(--rose);
+  border-radius: 2px;
+}
+
+.slice-cherry {
+  position: absolute;
+  top: -10px;
+  font-size: 14px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
+  animation: bounceCherry 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes bounceCherry {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-3px); }
+}
+
+.slice-label-pill {
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 99px;
+  background: rgba(246, 210, 137, 0.18);
+  border: 1px solid rgba(246, 210, 137, 0.45);
+  color: var(--gold);
+  white-space: nowrap;
+  letter-spacing: 0.03em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* Candles Row */
@@ -907,6 +1082,28 @@ button {
 .cake-counter b {
   color: var(--gold);
   font-weight: 700;
+}
+
+/* Cut Cake Prompt Button */
+.cut-cake-prompt {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.8rem;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s var(--ease), transform 0.5s var(--ease);
+}
+
+.screen.candles-blown:not(.cake-cut-completed) .cut-cake-prompt {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.screen.candles-blown .cake-counter {
+  display: none;
 }
 
 .wish-unlocked-card {
@@ -1579,6 +1776,7 @@ button {
             <span class="drip" style="left:76%;height:16px"></span>
           </div>
           <div class="tier-gold-band"></div>
+          <div class="cake-cut-seam"></div>
         </div>
 
         <!-- Top Tier -->
@@ -1589,6 +1787,42 @@ button {
             <span class="drip" style="left:78%;height:12px"></span>
           </div>
           <div class="tier-gold-band"></div>
+          <div class="cake-cut-seam"></div>
+        </div>
+
+        <!-- Floating Golden Cake Knife -->
+        <div class="cake-knife" id="cakeKnife" aria-hidden="true">
+          <svg viewBox="0 0 90 28" style="width:100%;height:100%">
+            <defs>
+              <linearGradient id="bladeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#ffffff"/>
+                <stop offset="50%" stop-color="#f6d289"/>
+                <stop offset="100%" stop-color="#d97706"/>
+              </linearGradient>
+              <linearGradient id="handleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#831843"/>
+                <stop offset="100%" stop-color="#4c0519"/>
+              </linearGradient>
+            </defs>
+            <!-- Knife Handle -->
+            <rect x="2" y="9" width="22" height="10" rx="4" fill="url(#handleGrad)" stroke="#f6d289" stroke-width="1"/>
+            <!-- Bolster -->
+            <rect x="23" y="7" width="4" height="14" rx="2" fill="#f6d289"/>
+            <!-- Blade -->
+            <path d="M27 8 L72 8 Q84 10 88 14 Q84 18 72 20 L27 20 Z" fill="url(#bladeGrad)" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.4))"/>
+            <path d="M29 14 L75 14" stroke="#ffffff" stroke-width="0.8" opacity="0.7"/>
+          </svg>
+        </div>
+
+        <!-- Served Slice on Miniature Plate -->
+        <div class="cake-slice-served" id="cakeSliceServed">
+          <div class="slice-mini-plate">
+            <div class="slice-plate-base"></div>
+            <div class="slice-piece">
+              <span class="slice-cherry">🍓</span>
+            </div>
+          </div>
+          <span class="slice-label-pill">For Rashmi 🍰</span>
         </div>
 
         <!-- 5 Candles -->
@@ -1634,6 +1868,18 @@ button {
       <p class="cake-counter" id="cakeCounter" data-anim style="--delay:3">
         Tap the flames to blow them out (<b id="candlesLeftNum">5</b> left)
       </p>
+
+      <!-- Cut Cake Action Trigger (appears when candles blown) -->
+      <div class="cut-cake-prompt" id="cutCakePrompt">
+        <button class="btn-primary" id="cutCakeBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.5 4h-5L7 7l5 5 7.5-7.5a2.12 2.12 0 0 0-3-3L14.5 4z"/>
+            <path d="M12 12l-7 7a2.83 2.83 0 0 0 4 4l7-7"/>
+          </svg>
+          Cut The Cake 🎂
+        </button>
+        <p class="hint-text" style="margin-top:0.3rem;font-size:0.85rem">Tap the button or the cake to cut the first slice</p>
+      </div>
 
       <div class="wish-unlocked-card" id="wishUnlocked">
         <h3 class="hero-title" style="font-size:clamp(1.8rem,5vw,2.4rem)">
@@ -1869,6 +2115,28 @@ const AudioEngine = (() => {
       gain.connect(masterGain);
       src.start(t);
       src.stop(t + 0.45);
+    },
+    slice() {
+      if (!isReady()) return;
+      const t = ctx.currentTime;
+      const src = ctx.createBufferSource();
+      src.buffer = noiseBuffer;
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(2400, t);
+      filter.frequency.exponentialRampToValueAtTime(300, t + 0.28);
+      const gain = ctx.createGain();
+      setEnvelope(gain, t, 0.005, 0.35, 0.28);
+      src.connect(filter);
+      filter.connect(gain);
+      gain.connect(masterGain);
+      src.start(t);
+      src.stop(t + 0.32);
+
+      // Sweet sparkle notes on slice
+      playTone(1046.5, t + 0.08, 0.15, 0.35);
+      playTone(1318.5, t + 0.16, 0.18, 0.45);
+      playTone(1567.98, t + 0.24, 0.2, 0.55);
     },
     thunk() {
       if (!isReady()) return;
@@ -2277,12 +2545,16 @@ sealBtn.addEventListener('keydown', e => {
 });
 
 /* =========================================================
-   SCREEN 3: CAKE BLOWING INTERACTION
+   SCREEN 3: CAKE BLOWING & INTERACTIVE CUTTING
 ========================================================= */
 const candleUnits = $$('#candlesRow .candle-unit');
 const candlesLeftNum = $('#candlesLeftNum');
 const cakeScreen = $('#s-cake');
+const cakeHeading = $('#cake-heading');
+const cakeStage = $('#cakeStage');
+const cutCakeBtn = $('#cutCakeBtn');
 let candlesRemaining = candleUnits.length;
+let isCuttingCake = false;
 
 function blowOutCandle(unit) {
   if (!unit || unit.classList.contains('is-extinguished')) return;
@@ -2295,17 +2567,55 @@ function blowOutCandle(unit) {
 
   if (candlesRemaining === 0) {
     setTimeout(() => {
-      cakeScreen.classList.add('cake-completed');
+      cakeScreen.classList.add('candles-blown');
+      if (cakeHeading) cakeHeading.innerHTML = 'Now, <em>Cut the Cake!</em> 🎂';
       AudioEngine.chime();
       buzz([25, 50, 25]);
-      FX.burstConfetti(window.innerWidth * 0.5, window.innerHeight * 0.45, 90);
+      FX.burstConfetti(window.innerWidth * 0.5, window.innerHeight * 0.38, 50);
     }, 450);
   }
+}
+
+function cutCakeAction() {
+  if (isCuttingCake || cakeScreen.classList.contains('cake-cut-completed')) return;
+  if (!cakeScreen.classList.contains('candles-blown')) return;
+  
+  isCuttingCake = true;
+  cakeStage.classList.add('is-cutting');
+  AudioEngine.slice();
+  buzz([40, 70, 40]);
+
+  const rect = cakeStage.getBoundingClientRect();
+  FX.burstConfetti(rect.left + rect.width / 2, rect.top + rect.height * 0.5, 95);
+
+  setTimeout(() => {
+    cakeStage.classList.remove('is-cutting');
+    cakeScreen.classList.add('cake-cut-completed');
+    cakeScreen.classList.add('cake-completed');
+    if (cakeHeading) cakeHeading.innerHTML = 'Cake Cut! <em>Make a Wish</em> ✨';
+    AudioEngine.birthdayChords();
+    buzz([30, 40, 60]);
+  }, 680);
 }
 
 candleUnits.forEach(unit => {
   unit.addEventListener('click', () => blowOutCandle(unit));
 });
+
+if (cutCakeBtn) {
+  cutCakeBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    cutCakeAction();
+  });
+}
+
+if (cakeStage) {
+  cakeStage.addEventListener('click', () => {
+    if (cakeScreen.classList.contains('candles-blown') && !cakeScreen.classList.contains('cake-cut-completed')) {
+      cutCakeAction();
+    }
+  });
+}
 
 /* =========================================================
    SCREEN 4: LUXURY STAMP INTERACTION
