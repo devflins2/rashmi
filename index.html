@@ -702,47 +702,114 @@ button {
 /* SCREEN 3: CAKE RITUAL & INTERACTIVE CUTTING */
 .cake-stage {
   position: relative;
-  width: 290px;
-  height: 240px;
-  margin: 0.8rem auto 0.2rem;
+  width: 300px;
+  height: 250px;
+  margin: 0.6rem auto 0.2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-end;
   cursor: pointer;
+  touch-action: pan-y;
+  user-select: none;
 }
 
 .cake-glow-floor {
   position: absolute;
   bottom: 0;
-  width: 260px;
+  width: 270px;
   height: 50px;
   border-radius: 50%;
-  background: radial-gradient(ellipse, rgba(246, 210, 137, 0.35) 0%, rgba(246, 210, 137, 0) 70%);
-  filter: blur(10px);
+  background: radial-gradient(ellipse, rgba(246, 210, 137, 0.4) 0%, rgba(246, 210, 137, 0) 70%);
+  filter: blur(12px);
   transition: opacity 1s var(--ease);
 }
 
 .cake-plate {
   position: absolute;
   bottom: 12px;
-  width: 250px;
+  width: 260px;
   height: 18px;
   border-radius: 50%;
-  background: linear-gradient(180deg, #584c6e 0%, #2f273d 100%);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), inset 0 2px 2px rgba(255, 255, 255, 0.25);
+  background: linear-gradient(180deg, #64567d 0%, #2f273d 100%);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.65), inset 0 2px 2px rgba(255, 255, 255, 0.3);
 }
 
+/* Tier Bottom */
 .tier-bottom {
   position: absolute;
   bottom: 24px;
-  width: 196px;
-  height: 68px;
-  border-radius: 12px 12px 8px 8px;
-  background: linear-gradient(180deg, #442a5c 0%, #261638 100%);
-  box-shadow: inset 0 4px 6px rgba(255, 255, 255, 0.15), 0 10px 20px rgba(0, 0, 0, 0.4);
+  width: 204px;
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  overflow: visible;
+}
+
+/* Tier Top */
+.tier-top {
+  position: absolute;
+  bottom: 86px;
+  width: 144px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  overflow: visible;
+}
+
+/* Half Tiers (Splitting Mechanics) */
+.tier-half {
+  position: relative;
+  width: 50%;
+  height: 100%;
   overflow: hidden;
-  transition: box-shadow 0.6s var(--ease);
+  background: linear-gradient(180deg, #4d2e69 0%, #241436 100%);
+  transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.8s var(--ease);
+}
+
+.tier-top .tier-half {
+  background: linear-gradient(180deg, #623c85 0%, #351f49 100%);
+}
+
+.tier-half.half-left {
+  border-radius: 12px 0 0 8px;
+  transform-origin: bottom left;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tier-half.half-right {
+  border-radius: 0 12px 8px 0;
+  transform-origin: bottom right;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.tier-top .tier-half.half-left {
+  border-radius: 10px 0 0 6px;
+}
+
+.tier-top .tier-half.half-right {
+  border-radius: 0 10px 6px 0;
+}
+
+/* Physical Separation when cut */
+.cake-cut-completed .tier-bottom .half-left {
+  transform: translateX(-10px) rotate(-2deg);
+  box-shadow: -4px 6px 18px rgba(0, 0, 0, 0.5), inset 0 0 12px rgba(246, 210, 137, 0.2);
+}
+
+.cake-cut-completed .tier-bottom .half-right {
+  transform: translateX(10px) rotate(2deg);
+  box-shadow: 4px 6px 18px rgba(0, 0, 0, 0.5), inset 0 0 12px rgba(246, 210, 137, 0.2);
+}
+
+.cake-cut-completed .tier-top .half-left {
+  transform: translateX(-8px) rotate(-2.5deg);
+  box-shadow: -3px 5px 14px rgba(0, 0, 0, 0.5);
+}
+
+.cake-cut-completed .tier-top .half-right {
+  transform: translateX(8px) rotate(2.5deg);
+  box-shadow: 3px 5px 14px rgba(0, 0, 0, 0.5);
 }
 
 .frosting-drips {
@@ -763,18 +830,6 @@ button {
   border-radius: 0 0 6px 6px;
 }
 
-.tier-top {
-  position: absolute;
-  bottom: 84px;
-  width: 138px;
-  height: 58px;
-  border-radius: 10px 10px 6px 6px;
-  background: linear-gradient(180deg, #593779 0%, #351f49 100%);
-  box-shadow: inset 0 4px 6px rgba(255, 255, 255, 0.18), 0 8px 18px rgba(0, 0, 0, 0.45);
-  overflow: hidden;
-  transition: box-shadow 0.6s var(--ease);
-}
-
 .tier-gold-band {
   position: absolute;
   bottom: 8px;
@@ -785,91 +840,124 @@ button {
   background: linear-gradient(90deg, transparent, var(--gold), transparent);
 }
 
+/* Inner Cream Filling Texture on Cut Face */
+.cut-face-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  opacity: 0;
+  background: repeating-linear-gradient(180deg, #fbf1e2 0, #fbf1e2 4px, #fb7185 4px, #fb7185 7px, #e9b959 7px, #e9b959 10px);
+  transition: opacity 0.5s ease;
+}
+
+.face-left { right: 0; }
+.face-right { left: 0; }
+
+.cake-cut-completed .cut-face-fill {
+  opacity: 1;
+}
+
 /* Glowing Cut Seam */
 .cake-cut-seam {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 50%;
-  width: 3px;
+  width: 4px;
   transform: translateX(-50%) scaleY(0);
-  background: linear-gradient(180deg, #ffffff, var(--gold) 45%, var(--rose) 85%);
-  box-shadow: 0 0 10px rgba(246, 210, 137, 0.9), 0 0 18px rgba(251, 113, 133, 0.7);
-  border-radius: 4px;
-  z-index: 4;
+  background: linear-gradient(180deg, #ffffff, var(--gold) 40%, var(--rose) 80%, #a855f7 100%);
+  box-shadow: 0 0 12px rgba(246, 210, 137, 1), 0 0 24px rgba(251, 113, 133, 0.85);
+  border-radius: 99px;
+  z-index: 5;
   transform-origin: top center;
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
 }
 
 .cake-cut-completed .cake-cut-seam {
   transform: translateX(-50%) scaleY(1);
+  animation: seamGlowPulse 2s ease-in-out infinite alternate;
 }
 
-.cake-cut-completed .tier-bottom,
-.cake-cut-completed .tier-top {
-  box-shadow: inset 0 4px 6px rgba(255, 255, 255, 0.15), 0 10px 24px rgba(0, 0, 0, 0.5), inset 0 0 14px rgba(246, 210, 137, 0.25);
+@keyframes seamGlowPulse {
+  0% { opacity: 0.7; box-shadow: 0 0 8px rgba(246, 210, 137, 0.8); }
+  100% { opacity: 1; box-shadow: 0 0 16px rgba(246, 210, 137, 1), 0 0 30px rgba(251, 113, 133, 0.9); }
 }
 
-/* Floating Decorative Cake Knife */
+/* Floating Golden Knife */
 .cake-knife {
   position: absolute;
-  top: -24px;
-  right: 22px;
-  width: 84px;
-  height: 84px;
+  top: -30px;
+  right: 25px;
+  width: 95px;
+  height: 95px;
   pointer-events: none;
   opacity: 0;
-  transform: translate(25px, -25px) rotate(-42deg);
-  transition: opacity 0.5s ease, transform 0.5s var(--ease);
-  z-index: 12;
-  filter: drop-shadow(0 4px 14px rgba(246, 210, 137, 0.5));
+  transform: translate(30px, -30px) rotate(-45deg) scale(0.9);
+  transition: opacity 0.6s ease, transform 0.6s var(--ease);
+  z-index: 15;
+  filter: drop-shadow(0 6px 16px rgba(246, 210, 137, 0.6));
 }
 
 .screen.candles-blown .cake-knife {
   opacity: 1;
-  transform: translate(0, 0) rotate(-32deg);
-  animation: knifeHover 2s ease-in-out infinite alternate;
+  transform: translate(0, 0) rotate(-35deg) scale(1);
+  animation: knifeFloatingGlow 2.2s ease-in-out infinite alternate;
 }
 
 .screen.cake-cut-completed .cake-knife {
   opacity: 0;
   animation: none;
-  pointer-events: none;
 }
 
-@keyframes knifeHover {
-  0% { transform: translateY(0) rotate(-32deg); }
-  100% { transform: translateY(-10px) rotate(-28deg); }
+@keyframes knifeFloatingGlow {
+  0% { transform: translateY(0) rotate(-35deg) scale(1); filter: drop-shadow(0 4px 12px rgba(246, 210, 137, 0.45)); }
+  100% { transform: translateY(-12px) rotate(-28deg) scale(1.05); filter: drop-shadow(0 8px 24px rgba(246, 210, 137, 0.85)); }
 }
 
-/* Knife Slicing Animation */
+/* Cinematic Knife Slice Down Animation */
 .cake-stage.is-cutting .cake-knife {
-  animation: knifeCutMotion 0.75s cubic-bezier(0.2, 0.9, 0.3, 1) forwards !important;
+  animation: cinematicKnifeCut 0.85s cubic-bezier(0.25, 1, 0.35, 1) forwards !important;
 }
 
-@keyframes knifeCutMotion {
-  0% { opacity: 1; transform: translate(12px, -15px) rotate(-32deg); }
-  35% { opacity: 1; transform: translate(-30px, 35px) rotate(-16deg); }
-  65% { opacity: 1; transform: translate(-45px, 85px) rotate(0deg); }
-  85% { opacity: 1; transform: translate(-50px, 140px) rotate(16deg); }
-  100% { opacity: 0; transform: translate(-55px, 175px) rotate(26deg); }
+@keyframes cinematicKnifeCut {
+  0% {
+    opacity: 1;
+    transform: translate(15px, -25px) rotate(-40deg) scale(1.1);
+  }
+  20% {
+    opacity: 1;
+    transform: translate(-20px, 15px) rotate(-20deg) scale(1.05);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-38px, 65px) rotate(0deg) scale(1);
+  }
+  75% {
+    opacity: 1;
+    transform: translate(-42px, 120px) rotate(15deg) scale(0.98);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-45px, 175px) rotate(28deg) scale(0.9);
+  }
 }
 
-/* Served Slice on Mini Plate */
+/* Served 3D Cake Slice & Dessert Plate */
 .cake-slice-served {
   position: absolute;
-  right: -16px;
-  bottom: 22px;
+  right: -25px;
+  bottom: 20px;
   opacity: 0;
-  transform: scale(0.3) translate(-36px, 18px) rotate(-14deg);
-  transition: opacity 0.6s var(--ease), transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform: scale(0.2) translate(-60px, 20px) rotate(-25deg);
+  transition: opacity 0.7s var(--ease), transform 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
   pointer-events: none;
-  z-index: 8;
+  z-index: 10;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
 }
 
 .cake-cut-completed .cake-slice-served {
@@ -877,84 +965,111 @@ button {
   transform: scale(1) translate(0, 0) rotate(0deg);
 }
 
-.slice-mini-plate {
+.slice-plate-container {
   position: relative;
-  width: 74px;
-  height: 54px;
+  width: 86px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.slice-plate-base {
+.slice-dessert-plate {
   position: absolute;
   bottom: 0;
-  width: 70px;
-  height: 11px;
+  width: 82px;
+  height: 14px;
   border-radius: 50%;
-  background: linear-gradient(180deg, #6b5b82 0%, #352b47 100%);
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.5), inset 0 1px 2px rgba(255, 255, 255, 0.35);
+  background: linear-gradient(180deg, #7c6c94 0%, #3b304f 100%);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6), inset 0 2px 3px rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(246, 210, 137, 0.3);
 }
 
-.slice-piece {
+.mini-fork {
+  position: absolute;
+  right: -8px;
+  bottom: 2px;
+  width: 14px;
+  height: 14px;
+  transform: rotate(45deg);
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+}
+
+.slice-3d-piece {
   position: relative;
-  width: 44px;
-  height: 38px;
+  width: 52px;
+  height: 44px;
+  margin-bottom: 6px;
   background: linear-gradient(145deg, #593779 0%, #351f49 70%, #261638 100%);
-  clip-path: polygon(50% 0%, 100% 85%, 85% 100%, 15% 100%, 0% 85%);
-  border-radius: 4px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  clip-path: polygon(50% 0%, 100% 82%, 85% 100%, 15% 100%, 0% 82%);
+  border-radius: 6px;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.6);
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-evenly;
+  overflow: hidden;
 }
 
-.slice-piece::before {
-  content: "";
+.slice-layer {
+  width: 100%;
+  height: 3px;
+}
+
+.sponge-top { background: #623c85; height: 6px; }
+.cream-layer-1 { background: #fbf1e2; height: 3px; box-shadow: 0 0 4px #fbf1e2; }
+.sponge-mid { background: #4d2e69; height: 6px; }
+.cream-layer-2 { background: #fb7185; height: 3px; }
+.sponge-base { background: #241436; height: 8px; }
+
+.slice-top-icing {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 9px;
+  height: 10px;
   background: #fbf1e2;
-  border-radius: 4px 4px 0 0;
+  border-radius: 6px 6px 0 0;
 }
 
-.slice-piece::after {
-  content: "";
+.slice-strawberry {
   position: absolute;
-  top: 18px;
-  left: 10%;
-  right: 10%;
-  height: 3px;
-  background: var(--rose);
-  border-radius: 2px;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 16px;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.5));
+  animation: bounceBerry 1.6s ease-in-out infinite alternate;
 }
 
-.slice-cherry {
+@keyframes bounceBerry {
+  0% { transform: translateX(-50%) translateY(0) rotate(-4deg); }
+  100% { transform: translateX(-50%) translateY(-4px) rotate(4deg); }
+}
+
+.slice-sparkle-star {
   position: absolute;
-  top: -10px;
-  font-size: 14px;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
-  animation: bounceCherry 1.5s ease-in-out infinite alternate;
+  top: -4px;
+  right: 2px;
+  font-size: 12px;
+  animation: sparkleTwinkle 1.2s ease-in-out infinite alternate;
 }
 
-@keyframes bounceCherry {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-3px); }
+@keyframes sparkleTwinkle {
+  0% { transform: scale(0.7) rotate(0deg); opacity: 0.5; }
+  100% { transform: scale(1.3) rotate(45deg); opacity: 1; }
 }
 
-.slice-label-pill {
-  font-size: 0.68rem;
-  font-weight: 600;
-  padding: 3px 9px;
+.slice-banner {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 3px 10px;
   border-radius: 99px;
-  background: rgba(246, 210, 137, 0.18);
-  border: 1px solid rgba(246, 210, 137, 0.45);
+  background: linear-gradient(135deg, rgba(246, 210, 137, 0.25) 0%, rgba(251, 113, 133, 0.25) 100%);
+  border: 1px solid rgba(246, 210, 137, 0.55);
   color: var(--gold);
   white-space: nowrap;
-  letter-spacing: 0.03em;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.02em;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
 }
 
 /* Candles Row */
@@ -1767,62 +1882,98 @@ button {
         <div class="cake-glow-floor"></div>
         <div class="cake-plate"></div>
         
-        <!-- Bottom Tier -->
-        <div class="tier-bottom">
-          <div class="frosting-drips">
-            <span class="drip" style="left:12%;height:12px"></span>
-            <span class="drip" style="left:32%;height:18px"></span>
-            <span class="drip" style="left:56%;height:10px"></span>
-            <span class="drip" style="left:76%;height:16px"></span>
+        <!-- Bottom Tier with physical split -->
+        <div class="tier-bottom" id="tierBottom">
+          <div class="tier-half half-left">
+            <div class="frosting-drips">
+              <span class="drip" style="left:14%;height:12px"></span>
+              <span class="drip" style="left:44%;height:18px"></span>
+              <span class="drip" style="left:76%;height:11px"></span>
+            </div>
+            <div class="tier-gold-band"></div>
+            <div class="cut-face-fill face-left"></div>
           </div>
-          <div class="tier-gold-band"></div>
+          <div class="tier-half half-right">
+            <div class="frosting-drips">
+              <span class="drip" style="left:22%;height:14px"></span>
+              <span class="drip" style="left:54%;height:16px"></span>
+              <span class="drip" style="left:84%;height:10px"></span>
+            </div>
+            <div class="tier-gold-band"></div>
+            <div class="cut-face-fill face-right"></div>
+          </div>
           <div class="cake-cut-seam"></div>
         </div>
 
-        <!-- Top Tier -->
-        <div class="tier-top">
-          <div class="frosting-drips">
-            <span class="drip" style="left:18%;height:10px"></span>
-            <span class="drip" style="left:48%;height:15px"></span>
-            <span class="drip" style="left:78%;height:12px"></span>
+        <!-- Top Tier with physical split -->
+        <div class="tier-top" id="tierTop">
+          <div class="tier-half half-left">
+            <div class="frosting-drips">
+              <span class="drip" style="left:20%;height:10px"></span>
+              <span class="drip" style="left:58%;height:15px"></span>
+            </div>
+            <div class="tier-gold-band"></div>
+            <div class="cut-face-fill face-left"></div>
           </div>
-          <div class="tier-gold-band"></div>
+          <div class="tier-half half-right">
+            <div class="frosting-drips">
+              <span class="drip" style="left:30%;height:12px"></span>
+              <span class="drip" style="left:68%;height:14px"></span>
+            </div>
+            <div class="tier-gold-band"></div>
+            <div class="cut-face-fill face-right"></div>
+          </div>
           <div class="cake-cut-seam"></div>
         </div>
 
-        <!-- Floating Golden Cake Knife -->
+        <!-- High Quality Golden Birthday Knife -->
         <div class="cake-knife" id="cakeKnife" aria-hidden="true">
-          <svg viewBox="0 0 90 28" style="width:100%;height:100%">
+          <svg viewBox="0 0 110 32" style="width:100%;height:100%">
             <defs>
-              <linearGradient id="bladeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <linearGradient id="knifeBlade" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stop-color="#ffffff"/>
-                <stop offset="50%" stop-color="#f6d289"/>
+                <stop offset="30%" stop-color="#fff8db"/>
+                <stop offset="70%" stop-color="#f6d289"/>
                 <stop offset="100%" stop-color="#d97706"/>
               </linearGradient>
-              <linearGradient id="handleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#831843"/>
-                <stop offset="100%" stop-color="#4c0519"/>
+              <linearGradient id="knifeHandle" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#4a044e"/>
+                <stop offset="50%" stop-color="#701a75"/>
+                <stop offset="100%" stop-color="#2e0238"/>
               </linearGradient>
             </defs>
-            <!-- Knife Handle -->
-            <rect x="2" y="9" width="22" height="10" rx="4" fill="url(#handleGrad)" stroke="#f6d289" stroke-width="1"/>
-            <!-- Bolster -->
-            <rect x="23" y="7" width="4" height="14" rx="2" fill="#f6d289"/>
-            <!-- Blade -->
-            <path d="M27 8 L72 8 Q84 10 88 14 Q84 18 72 20 L27 20 Z" fill="url(#bladeGrad)" filter="drop-shadow(0 2px 4px rgba(0,0,0,0.4))"/>
-            <path d="M29 14 L75 14" stroke="#ffffff" stroke-width="0.8" opacity="0.7"/>
+            <rect x="2" y="10" width="26" height="12" rx="5" fill="url(#knifeHandle)" stroke="#f6d289" stroke-width="1.2"/>
+            <line x1="9" y1="10" x2="9" y2="22" stroke="rgba(246,210,137,0.5)" stroke-width="1"/>
+            <line x1="16" y1="10" x2="16" y2="22" stroke="rgba(246,210,137,0.5)" stroke-width="1"/>
+            <line x1="23" y1="10" x2="23" y2="22" stroke="rgba(246,210,137,0.5)" stroke-width="1"/>
+            <rect x="27" y="6" width="5" height="20" rx="2.5" fill="#f6d289" stroke="#fff" stroke-width="0.6"/>
+            <path d="M32 9 L90 9 Q106 12 108 16 Q106 20 90 23 L32 23 Z" fill="url(#knifeBlade)" filter="drop-shadow(0 3px 6px rgba(0,0,0,0.45))"/>
+            <path d="M34 11 L88 11 Q100 13 103 16 Q100 18 88 20 L34 20" fill="none" stroke="#fff" stroke-width="1" opacity="0.6"/>
           </svg>
         </div>
 
-        <!-- Served Slice on Miniature Plate -->
+        <!-- Served 3D Cake Slice & Dessert Plate -->
         <div class="cake-slice-served" id="cakeSliceServed">
-          <div class="slice-mini-plate">
-            <div class="slice-plate-base"></div>
-            <div class="slice-piece">
-              <span class="slice-cherry">🍓</span>
+          <div class="slice-plate-container">
+            <div class="slice-dessert-plate">
+              <svg class="mini-fork" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8">
+                <path d="M12 2v20M8 2v6a4 4 0 0 0 8 0V2"/>
+              </svg>
+            </div>
+            <div class="slice-3d-piece">
+              <div class="slice-layer sponge-top"></div>
+              <div class="slice-layer cream-layer-1"></div>
+              <div class="slice-layer sponge-mid"></div>
+              <div class="slice-layer cream-layer-2"></div>
+              <div class="slice-layer sponge-base"></div>
+              <div class="slice-top-icing"></div>
+              <div class="slice-strawberry">🍓</div>
+              <div class="slice-sparkle-star">✨</div>
             </div>
           </div>
-          <span class="slice-label-pill">For Rashmi 🍰</span>
+          <div class="slice-banner">
+            <span>First Slice for Rashmi 🍰</span>
+          </div>
         </div>
 
         <!-- 5 Candles -->
@@ -2555,6 +2706,7 @@ const cakeStage = $('#cakeStage');
 const cutCakeBtn = $('#cutCakeBtn');
 let candlesRemaining = candleUnits.length;
 let isCuttingCake = false;
+let startY = 0, isDraggingCake = false;
 
 function blowOutCandle(unit) {
   if (!unit || unit.classList.contains('is-extinguished')) return;
@@ -2571,7 +2723,7 @@ function blowOutCandle(unit) {
       if (cakeHeading) cakeHeading.innerHTML = 'Now, <em>Cut the Cake!</em> 🎂';
       AudioEngine.chime();
       buzz([25, 50, 25]);
-      FX.burstConfetti(window.innerWidth * 0.5, window.innerHeight * 0.38, 50);
+      FX.burstConfetti(window.innerWidth * 0.5, window.innerHeight * 0.38, 55);
     }, 450);
   }
 }
@@ -2586,16 +2738,27 @@ function cutCakeAction() {
   buzz([40, 70, 40]);
 
   const rect = cakeStage.getBoundingClientRect();
-  FX.burstConfetti(rect.left + rect.width / 2, rect.top + rect.height * 0.5, 95);
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height * 0.45;
 
+  // Initial slice burst
+  FX.burstConfetti(centerX, centerY - 20, 60);
+
+  // Mid-cut crumbs & sparkle burst
+  setTimeout(() => {
+    FX.burstConfetti(centerX, centerY + 30, 80);
+  }, 350);
+
+  // Completion: reveal served slice & wish card
   setTimeout(() => {
     cakeStage.classList.remove('is-cutting');
     cakeScreen.classList.add('cake-cut-completed');
     cakeScreen.classList.add('cake-completed');
     if (cakeHeading) cakeHeading.innerHTML = 'Cake Cut! <em>Make a Wish</em> ✨';
     AudioEngine.birthdayChords();
-    buzz([30, 40, 60]);
-  }, 680);
+    buzz([30, 50, 60]);
+    FX.burstConfetti(centerX + 60, centerY + 20, 90);
+  }, 820);
 }
 
 candleUnits.forEach(unit => {
@@ -2614,6 +2777,27 @@ if (cakeStage) {
     if (cakeScreen.classList.contains('candles-blown') && !cakeScreen.classList.contains('cake-cut-completed')) {
       cutCakeAction();
     }
+  });
+
+  // Swipe / Drag to cut support
+  cakeStage.addEventListener('pointerdown', e => {
+    if (cakeScreen.classList.contains('candles-blown') && !cakeScreen.classList.contains('cake-cut-completed')) {
+      isDraggingCake = true;
+      startY = e.clientY;
+    }
+  });
+
+  window.addEventListener('pointermove', e => {
+    if (isDraggingCake && !isCuttingCake) {
+      if (e.clientY - startY > 35) {
+        isDraggingCake = false;
+        cutCakeAction();
+      }
+    }
+  });
+
+  window.addEventListener('pointerup', () => {
+    isDraggingCake = false;
   });
 }
 
